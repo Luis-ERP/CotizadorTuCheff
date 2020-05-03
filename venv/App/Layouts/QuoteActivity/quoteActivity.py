@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from Layouts.QuoteActivity.upperSegment import *
+from Source.Quote.upperSegment import *
 from Layouts.QuoteActivity.lowerSegment import LowerSegment
 
 class QuoteActivity(QWidget):

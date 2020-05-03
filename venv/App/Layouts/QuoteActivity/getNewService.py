@@ -23,7 +23,7 @@ class GetNewService(QGroupBox):
         self.nuHours = QSpinBox()
         label1 = QLabel('persona(s)')
         label2 = QLabel('hora(s)')
-        self.elementTemplates = QComboBox()
+        self.serviceTemplates = QComboBox()
         self.btnAddElement = QPushButton('Agregar elemento')
         self.btnCloseService = QPushButton()
         label3 = QLabel('Cantidad')
@@ -47,7 +47,7 @@ class GetNewService(QGroupBox):
         self.nuHours.setEnabled(False)
 
         ##layout structure
-        hLayout2.addWidget(self.elementTemplates)
+        hLayout2.addWidget(self.serviceTemplates)
         hLayout2.addWidget(self.btnAddElement)
 
         vLayout2.addWidget(self.serviceName)

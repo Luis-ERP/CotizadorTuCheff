@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
-from Layouts.DatabasesActivity.servicesDB import ServicesDB
-from Layouts.DatabasesActivity.elementsDB import ElementsDB
+from Source.Databases.servicesDB import ServicesDB
+from Source.Databases.elementsDB import ElementsDB
 
 
 class DatabasesActivity(QWidget):
@@ -11,11 +11,11 @@ class DatabasesActivity(QWidget):
         hLayout1 = QHBoxLayout()
 
         ##declare components
-        services = ServicesDB()
-        elements = ElementsDB()
+        self.services = ServicesDB()
+        self.elements = ElementsDB()
 
         ##layout structure
-        hLayout1.addWidget(services)
-        hLayout1.addWidget(elements)
+        hLayout1.addWidget(self.services)
+        hLayout1.addWidget(self.elements)
 
         self.setLayout(hLayout1)

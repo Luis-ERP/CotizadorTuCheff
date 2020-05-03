@@ -1,66 +1,122 @@
 from firebase import firebase
-from Database import firebaseAuth
+import pyrebase
+
+from Database.quote import Quote
+from Database.service import Service
+from Database.element import Element
+from Database.configuration import Configuration
+
+
+config = {
+    "apiKey": "AIzaSyAjm9GAUbdlpN1KtjY_AOLjR9OcnvYExxg",
+    "authDomain": "prueba-cotizador-dd3fb.firebaseapp.com",
+    "databaseURL": "https://prueba-cotizador-dd3fb.firebaseio.com",
+    "projectId": "prueba-cotizador-dd3fb",
+    "storageBucket": "prueba-cotizador-dd3fb.appspot.com",
+    "messagingSenderId": "452704216145",
+    "appId": "1:452704216145:web:a5d2883ccf4de7a4d60470",
+    "measurementId": "G-8DL2NKTSW0"
+}
+
 
 class QueryManager:
-    def __init__(self, dbURL):
-        self.writeFirebase = firebase.FirebaseApplication(dbURL, None)
-
-    #### -------------------------------------------- PRIVATE -------------------------------------------- ####
-    ## BASIC QUERY FUNCTIONS
-    def read(self):
-        pass
-
-    def write(self):
-        pass
-
-    ## COMPOUNDED QUERY FUNCTIONS
-    def append(self):
-        pass
-
-    def delete(self):
-        pass
-
-    def update(self):
-        pass
+    def __init__(self):
+        """
+        Firebase rules
+        append: push()
+        retreive: get()
+        update: update()
+        get value: val()
+        get key: key()
+        remove: remove()
+        parse children: each()
+        """
+        self.firebaseApp = pyrebase.initialize_app(config)
+        self.db = self.firebaseApp.database()
 
     #### -------------------------------------------- PUBLIC -------------------------------------------- ####
-    ## CONNECT TO FIREBASE
-    def connect2Firebase(self):
-        pass
-
-    ## QUOTES
-    def addNewQuote(self):
-        pass
-
-    def deleteQuote(self):
-        pass
-
-    def modifyQuote(self):
-        pass
 
     ## SERVICES
-    def addNewService(self):
-        pass
+    def getServiceById(self, id):
+        service = self.db.child('Service').child(id).get().val()
+        servObj = Service()
+        servObj.fromDict(id, service)
+        return servObj
 
-    def deleteService(self):
-        pass
+    def getAllServices(self):
+        keys = self.db.child('Service').get().val()
+        if keys == None:
+            return []
+        servObjs = []
+        for key in keys:
+            serv = self.getServiceById(str(key))
+            servObjs.append(serv)
+        return servObjs
 
-    def modifyService(self):
-        pass
+    def addNewService(self, service):
+        baseService = Service()
+        if type(service) != type(baseService):
+            return None
+        newService = service.toDict()
+        self.db.child('Service').push(newService)
+
+    def deleteService(self, id):
+        self.db.child('Service').child(id).remove()
+
+    def modifyService(self, service):
+        baseService = Service()
+        if type(service) != type(baseService):
+            return None
+        self.db.child('Service').child(service.id).update(service)
+
 
     ## ELEMENTS
-    def addNewElement(self):
-        pass
+    def getElementById(self, id):
+        element = self.db.child('Element').child(id).get().val()
+        elemObj = Element()
+        elemObj.fromDict(id, element)
+        return elemObj
 
-    def deleteElement(self):
-        pass
+    def getAllElements(self):
+        keys = self.db.child('Element').get().val()
+        if keys == None:
+            return []
+        elemObjs = []
+        for key in keys:
+            elem = self.getElementById(str(key))
+            elemObjs.append(elem)
+        return elemObjs
 
-    def modifyElement(self):
-        pass
+    def addNewElement(self, element):
+        baseElement = Element()
+        if type(baseElement) != type(element):
+            return None
+        newElem = element.toDict()
+        self.db.child('Element').push(newElem)
+
+    def deleteElement(self, id):
+        self.db.child('Element').child(id).remove()
+
+    def deleteElementInServices(self, elementId, indexId):
+        allServices = self.getAllServices()
+        for service in allServices:
+            for elem in service.elements:
+                if elem['Id'] == elementId:
+                    self.db.child('Service').child(service.id).child('Elements').child(indexId).remove()
+
+    def modifyElement(self, element):
+        baseElement = Element()
+        if type(baseElement) != type(element):
+            return None
+        self.db.child('Element').child(element.id).update(element)
 
     ## ACCESS CONFIGURATIONS JSON
-    def parseConfiguration(self):
-        pass
+    def getConfiguration(self):
+        configuration = self.db.child('Configuration').get().val()
+        return configuration
 
-    def modifyConfiguration(self):
-        pass
+    def modifyConfiguration(self, newConfig):
+        base = Configuration()
+        if type(newConfig) != type(base):
+            return None
+        self.db.child('Configuration').update(newConfig)

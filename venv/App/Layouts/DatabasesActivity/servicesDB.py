@@ -1,14 +1,14 @@
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui, QtCore
 
-class ServicesDB(QWidget):
+class ServicesDBActivity(QWidget):
     def __init__(self):
-        super(ServicesDB, self).__init__()
+        super(ServicesDBActivity, self).__init__()
         self.setMaximumWidth(700)
 
         ##declare layouts
         vLayout1 = QVBoxLayout()
-        self.tLayout1 = QTableWidget(1, 5)
+        self.tLayout1 = QTableWidget(0, 5)
 
         ##declare components
         label1 = QLabel('Servicios')
@@ -32,6 +32,7 @@ class ServicesDB(QWidget):
 class NewServiceToDB(QDialog):
     def __init__(self):
         super(NewServiceToDB, self).__init__()
+        self.setFixedWidth(500)
 
         ##declare layouts
         vLayout1 = QVBoxLayout()
@@ -39,8 +40,6 @@ class NewServiceToDB(QDialog):
         hLayout2 = QHBoxLayout()
         hLayout3 = QHBoxLayout()
         self.vLayout2 = QVBoxLayout()
-        wLayout1 = QWidget()
-        scrollArea = QScrollArea()
 
         ##declare widgets
         label1 = QLabel('Nuevo servicio')
@@ -55,6 +54,10 @@ class NewServiceToDB(QDialog):
         self.serviceName = QLineEdit()
         self.serviceDescription = QLineEdit()
 
+        ##components comfiguration
+        self.serviceName.setPlaceholderText('Nombre')
+        self.serviceDescription.setPlaceholderText('Descripción')
+
         ##layout structure
         hLayout1.addWidget(label1)
         hLayout1.addWidget(self.btnAddNewService)
@@ -62,7 +65,6 @@ class NewServiceToDB(QDialog):
         hLayout2.addWidget(self.serviceName)
         hLayout2.addWidget(self.serviceDescription)
 
-        hLayout3.addWidget(label1)
         hLayout3.addWidget(label2)
         hLayout3.addWidget(label3)
         hLayout3.addWidget(label4)
@@ -70,13 +72,42 @@ class NewServiceToDB(QDialog):
         hLayout3.addWidget(label6)
         hLayout3.addWidget(label7)
 
-        wLayout1.setLayout(self.vLayout2)
-        scrollArea.setWidget(wLayout1)
-
         vLayout1.addLayout(hLayout1)
         vLayout1.addLayout(hLayout2)
         vLayout1.addWidget(self.btnAddElement)
         vLayout1.addLayout(hLayout3)
-        vLayout1.addWidget(scrollArea)
+        vLayout1.addLayout(self.vLayout2)
 
         self.setLayout(vLayout1)
+
+
+class ElementLayout(QWidget):
+    def __init__(self):
+        super(ElementLayout, self).__init__()
+
+        ##declare layouts
+        hLayout1 = QHBoxLayout()
+
+        ##declare components
+        self.name = QComboBox()
+        self.btnVisible = QPushButton()
+        self.category = QComboBox()
+        self.priceLabel = QLabel()
+        self.descriptionLabel = QLabel()
+        self.btnDelete = QPushButton()
+
+        ##components configuration
+        self.btnVisible.setIcon(QtGui.QIcon('Res/Icons/visibleOn.png'))
+        self.btnVisible.setMaximumWidth(30)
+        self.btnDelete.setIcon(QtGui.QIcon('Res/Icons/remove1.png'))
+        self.btnDelete.setMaximumWidth(30)
+
+        ##set layout structure
+        hLayout1.addWidget(self.name)
+        hLayout1.addWidget(self.btnVisible)
+        hLayout1.addWidget(self.category)
+        hLayout1.addWidget(self.priceLabel)
+        hLayout1.addWidget(self.descriptionLabel)
+        hLayout1.addWidget(self.btnDelete)
+
+        self.setLayout(hLayout1)
