@@ -24,8 +24,10 @@ class GetNewElement(QWidget):
         self.btnVisible.setIcon(QtGui.QIcon('Res/Icons/visibleOn.png'))
         self.elementName.setPlaceholderText('Nombre')
         self.comments.setPlaceholderText('Descripción')
-        self.category.setMaximumWidth(60)
-        self.elementName.setMinimumWidth(100)
+        self.category.setMaximumWidth(100)
+        self.category.setMinimumWidth(80)
+        self.comments.setMaximumWidth(100)
+        self.quantity.setValue(1)
 
         ##declare structure
         hLayout1.addWidget(self.quantity)

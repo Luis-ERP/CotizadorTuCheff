@@ -14,7 +14,7 @@ class ClientSegment(QGroupBox):
         ##declare component
         label1 = QLabel('Nombre:')
         label2 = QLabel('Apellido:')
-        label3 = QLabel('Tipo de cliente*:')
+        label3 = QLabel('Tipo de cliente:*')
         label4 = QLabel('E-mail:')
         label5 = QLabel('Teléfono:')
         label6 = QLabel('Empresa:')
@@ -122,6 +122,8 @@ class ConfigurationSegment(QGroupBox):
         self.gasPrice.setMaximumWidth(70)
         self.quoteValid.setDateTime(QtCore.QDateTime.currentDateTime())
         self.quoteValid.setMaximumWidth(80)
+        self.checkSeparatedQuotes.setChecked(True)
+        self.checkShowElemPrices.setChecked(True)
 
         ##declare spacers
         hSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)

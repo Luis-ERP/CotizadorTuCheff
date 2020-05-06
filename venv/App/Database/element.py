@@ -4,6 +4,7 @@ class Element:
         self.name = name
         self.visible = visibility
         self.price = price
+        self.totalPrice = 0
         self.description = description
         self.defaultCategoryID = defaultCatId
         self.quantity = 1

@@ -11,21 +11,18 @@ class QuoteActivity(QWidget):
         self.hLayout1 = QHBoxLayout()
 
         #declare components
-        self.upperLeftSegment = ClientSegment()
-        self.upperCenterLeftSegment = EventSegment()
-        self.upperCenterRightSegment = ConfigurationSegment(self)
-        self.upperRightSegment = CodeSegment()
+        self.client = ClientSegment()
+        self.event = EventSegment()
+        self.configuration = ConfigurationSegment(self)
+        self.code = CodeSegment()
         self.lowerSegment = LowerSegment()
 
         #layout structure
-        self.hLayout1.addWidget(self.upperCenterRightSegment)
-        self.hLayout1.addWidget(self.upperLeftSegment)
-        self.hLayout1.addWidget(self.upperCenterLeftSegment)
-        self.hLayout1.addWidget(self.upperRightSegment)
+        self.hLayout1.addWidget(self.configuration)
+        self.hLayout1.addWidget(self.client)
+        self.hLayout1.addWidget(self.event)
+        self.hLayout1.addWidget(self.code)
 
         self.vLayout1.addLayout(self.hLayout1)
         self.vLayout1.addWidget(self.lowerSegment)
         self.setLayout(self.vLayout1)
-
-    def addNewQuote(self):
-        self.lowerSegment.addNewWidget()

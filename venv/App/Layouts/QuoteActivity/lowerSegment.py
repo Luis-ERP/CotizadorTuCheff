@@ -26,10 +26,15 @@ class LowerSegment(QScrollArea):
         widget = NewQuote(self, self.hLayout1.count()+1)
         self.hLayout1.addWidget(widget)
 
-
-    def removeWidget(self):
+    def removeQuote(self):
         for i in range(self.hLayout1.count()):
             widget = self.hLayout1.itemAt(i)
             if not widget.widget().isEnabled():
                 self.hLayout1.removeWidget(widget.widget())
                 break
+
+    def getAllInformation(self):
+        quotes = []
+        for i in range(self.hLayout1.count()):
+            quotes.append(self.hLayout1.itemAt(i).widget().getQuoteInformation())
+        return quotes

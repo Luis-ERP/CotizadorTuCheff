@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 
 class GetNewService(QGroupBox):
     def __init__(self, parent):
@@ -16,23 +16,23 @@ class GetNewService(QGroupBox):
         self.vLayout3 = QVBoxLayout()
 
         ##declare components
+        label1 = QLabel('persona(s)')
+        label2 = QLabel('hora(s)')
+        label3 = QLabel('Cantidad')
+        label4 = QLabel('Visible')
+        label5 = QLabel('Nombre')
+        label6 = QLabel('Categoría')
+        label7 = QLabel('Precio X cant.')
+        label8 = QLabel('Descripción')
+        label9 = QLabel('Quitar')
         self.serviceName = QLineEdit()
         self.checkXPerson = QCheckBox('Servicio por')
         self.checkXHour = QCheckBox('Servicio por')
         self.nuGuests = QSpinBox()
         self.nuHours = QSpinBox()
-        label1 = QLabel('persona(s)')
-        label2 = QLabel('hora(s)')
         self.serviceTemplates = QComboBox()
         self.btnAddElement = QPushButton('Agregar elemento')
         self.btnCloseService = QPushButton()
-        label3 = QLabel('Cantidad')
-        label4 = QLabel('Visible')
-        label5 = QLabel('Nombre')
-        label6 = QLabel('Unidad')
-        label7 = QLabel('Precio x Un.')
-        label8 = QLabel('Descripción')
-        label9 = QLabel('Quitar')
 
         ##components configuration
         self.btnCloseService.setIcon(QtGui.QIcon('Res/Icons/remove1.png'))
@@ -45,6 +45,15 @@ class GetNewService(QGroupBox):
         self.nuHours.setMaximum(999999)
         self.nuHours.setMaximumWidth(40)
         self.nuHours.setEnabled(False)
+        hLayout3.setAlignment(QtCore.Qt.AlignLeft)
+        #                         l  u  r  b
+        label3.setContentsMargins(0,0,0,0)  #quantity
+        label4.setContentsMargins(0,0,60,0) #visible
+        label5.setContentsMargins(0,0,75,0) #name
+        label6.setContentsMargins(0,0,15,0) #category
+        label7.setContentsMargins(0,0,20,0) #price
+        label8.setContentsMargins(0,0,20,0) #comments
+        label9.setContentsMargins(0,0,0,0)  #btn close
 
         ##layout structure
         hLayout2.addWidget(self.serviceTemplates)

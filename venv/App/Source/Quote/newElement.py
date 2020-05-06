@@ -19,6 +19,7 @@ class NewElement(GetNewElement):
         ##event handlers
         self.btnVisible.clicked.connect(self.changeVisibility)
         self.category.currentIndexChanged.connect(self.fillWithCategoryInfo)
+        self.btnCloseElement.clicked.connect(self.destroy)
 
     def setCategoriesToComboBox(self):
         for cat in self.categories:
@@ -48,15 +49,17 @@ class NewElement(GetNewElement):
         else:
             self.btnVisible.setIcon(QtGui.QIcon('Res/Icons/visibleOff.png'))
 
-    def getInformation(self):
-        pass
-        """
+    def destroy(self):
+        self.setEnabled(False)
+        self.setVisible(False)
+        self.parent.removeElement()
+
+    def getElementInformation(self):
         elemObj = element.Element()
-        elemObj.name = self.elementName
-        elemObj.visible = self.btnVisible
-        elemObj.quantity = self.quantity
-        elemObj.categorySelectedName = self.category
-        elemObj.price = self.price
-        elemObj.comments = self.comments
-        """
+        elemObj.name = self.elementName.text()
+        elemObj.visible = self.visibility
+        elemObj.quantity = self.quantity.value()
+        elemObj.price = self.price.value()
+        elemObj.comments = self.comments.text()
+        return elemObj
 

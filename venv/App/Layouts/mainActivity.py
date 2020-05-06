@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QTabWidget
 
-from Layouts.QuoteActivity.quoteActivity import QuoteActivity
+from Source.Quote.quote import Quote
 from Source.Databases import databases
 from Source.Configuration import configuration
 from Source.Help import help as helpModule
@@ -10,7 +10,7 @@ class MainActivity(QTabWidget):
         super().__init__()
 
         ## declare tabs
-        tab1 = QuoteActivity()
+        tab1 = Quote()
         tab2 = databases.Databases()
         tab3 = configuration.Configuration()
         tab4 = helpModule.Help()
