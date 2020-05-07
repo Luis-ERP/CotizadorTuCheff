@@ -24,3 +24,4 @@ Requirements
 * PyQt5
 * Pyrebase4
 * Python-firebase
+* Reportlab
