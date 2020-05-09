@@ -1,5 +1,6 @@
 from firebase import firebase
 import pyrebase
+import requests
 
 from Database.quote import Quote
 from Database.service import Service
@@ -33,6 +34,7 @@ class QueryManager:
         """
         self.firebaseApp = pyrebase.initialize_app(config)
         self.db = self.firebaseApp.database()
+        self.auth = self.firebaseApp.auth()
 
     #### -------------------------------------------- PUBLIC -------------------------------------------- ####
 
@@ -110,6 +112,7 @@ class QueryManager:
             return None
         self.db.child('Element').child(element.id).update(element)
 
+
     ## ACCESS CONFIGURATIONS JSON
     def getConfiguration(self):
         configuration = self.db.child('Configuration').get().val()
@@ -120,3 +123,51 @@ class QueryManager:
         if type(newConfig) != type(base):
             return None
         self.db.child('Configuration').update(newConfig)
+
+
+    ##AUTHENTICATION
+    def createNewUser(self, user, confimEmail, confirmPass):
+        success1 = self.confirmEmail(user.email, confimEmail)
+        success2 = self.confirmPassword(user.password, confirmPass)
+        if not (success1 and success2):
+            return 'PASSWORD_OR_EMAIL_DOESNT_MATCH'
+
+        try:
+            newUser = self.auth.create_user_with_email_and_password(user.email, user.password)
+        except requests.HTTPError as e:
+            response = e.args[0].response
+            error = response.json()['error']['message']
+            return error
+
+        userToDB = self.createNewUserDB(user)
+        if not (userToDB == True):
+            return userToDB
+        return True
+
+    def createNewUserDB(self, user):
+        try:
+            userDict = user.toDict()
+            self.db.child('Users').push(userDict)
+            return True
+        except requests.HTTPError as e:
+            response = e.args[0].response
+            error = response.json()['error']['message']
+            return error
+
+    def confirmEmail(self, email, confimation):
+        return email == confimation
+
+    def confirmPassword(self, password, confirmation):
+        return password == confirmation
+
+    def signIn(self, email, password):
+        try:
+            login = self.auth.sign_in_with_email_and_password(email, password)
+            return True
+        except requests.HTTPError as e:
+            response = e.args[0].response
+            error = response.json()['error']['message']
+            return error
+
+    def signOut(self):
+        pass

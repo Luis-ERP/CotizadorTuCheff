@@ -6,7 +6,7 @@ class QuoteConfig(QGroupBox):
     def __init__(self):
         super(QuoteConfig, self).__init__('Cotizaciones')
         self.setMaximumWidth(300)
-
+        self.setMaximumHeight(350)
 
         ##declare layout
         vLayout1 = QVBoxLayout()
@@ -35,7 +35,7 @@ class QuoteConfig(QGroupBox):
         self.btnAddClientType = QPushButton('Nuevo tipo')
 
         ##components configuration
-        vLayout1.setAlignment(QtCore.Qt.AlignLeft)
+        vLayout1.setAlignment(QtCore.Qt.AlignTop)
 
         ##layout structure
         fLayout1.addRow(label3, self.red)

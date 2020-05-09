@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import *
 class MyAccountConfig(QGroupBox):
     def __init__(self):
         super(MyAccountConfig, self).__init__('Mi cuenta')
-        self.setMaximumWidth(300)
-        self.setMaximumHeight(100)
+        self.setMaximumWidth(400)
+        self.setMaximumHeight(120)
 
         ##declare layout
         fLayout1 = QFormLayout()
@@ -17,7 +17,7 @@ class MyAccountConfig(QGroupBox):
         self.nameLabel = QLabel()
         self.emailLabel = QLabel()
         self.phoneLabel = QLabel()
-        self.btnEditInfo = QPushButton()
+        self.btnEditInfo = QPushButton('Editar')
 
         ##layout structure
         fLayout1.addRow(label1, self.nameLabel)
