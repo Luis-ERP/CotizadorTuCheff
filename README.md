@@ -25,3 +25,5 @@ Requirements
 * Pyrebase4
 * Python-firebase
 * Reportlab
+
+To run, execute  CotizadorTuCheff.py
