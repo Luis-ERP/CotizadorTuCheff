@@ -27,6 +27,7 @@ class InfoConfig(QGroupBox):
         self.rfc = QLineEdit()
         self.name = QLineEdit()
         self.btnSaveChanges = QPushButton('Guardar cambios')
+        self.message = QLabel('')
 
         ##layout structure
         vLayout1.addWidget(label1)
@@ -43,6 +44,7 @@ class InfoConfig(QGroupBox):
         vLayout1.addWidget(self.rfc)
         vLayout1.addWidget(label7)
         vLayout1.addWidget(self.name)
+        vLayout1.addWidget(self.message)
         vLayout1.addWidget(self.btnSaveChanges)
 
         self.setLayout(vLayout1)

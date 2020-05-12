@@ -6,7 +6,6 @@ from Source.Databases import databases
 from Source.Configuration import configuration
 from Source.Help import help as helpModule
 from Source.Authentication import logIn, registerUser
-from Source import main
 
 
 class MainActivity(QTabWidget):
@@ -48,21 +47,3 @@ class AuthenticationDialogActivity(QDialog):
         vLayout1.addWidget(self.stacker)
 
         self.setLayout(vLayout1)
-
-    def changeToMainWindow(self):
-        self.mainApplication = main.Main()
-        self.mainWindow.setCentralWidget(self.mainApplication)
-        self.mainWindow.setGeometry(10, 35, 1580, 820)
-        self.mainWindow.setWindowIcon(QtGui.QIcon('Res/Icons/Imagen1.png'))
-        self.mainWindow.setWindowTitle("Cotizador TuCheff Eventos")
-
-    def changeToRegisterWindow(self):
-        self.mainWindow.resize(550, 250)
-        self.stacker.setCurrentIndex(1)
-
-    def changeToLogInWindow(self):
-        self.mainWindow.resize(300, 250)
-        self.stacker.setCurrentIndex(0)
-
-    def changeToSuccesWindow(self):
-        self.stacker.setCurrentIndex(2)

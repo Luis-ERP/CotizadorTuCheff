@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import *
 class UsersConfig(QGroupBox):
     def __init__(self):
         super(UsersConfig, self).__init__('Administrador de usuarios')
-        self.setMaximumWidth(700)
 
         ##declare layouts
         hLayout1 = QHBoxLayout()

@@ -1,17 +1,18 @@
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
-
+from Source.queryManager import QueryManager
 
 class QuoteConfig(QGroupBox):
     def __init__(self):
         super(QuoteConfig, self).__init__('Cotizaciones')
         self.setMaximumWidth(300)
-        self.setMaximumHeight(350)
+        self.db = QueryManager()
 
         ##declare layout
         vLayout1 = QVBoxLayout()
+        hLayout1 = QHBoxLayout()
         fLayout1 = QFormLayout()
-        self.vLayout2 = QVBoxLayout()
+        self.tLayout1 = QTableWidget(0, 2)
 
         ##declare components
         label1 = QLabel('Imagen de fondo')
@@ -31,17 +32,35 @@ class QuoteConfig(QGroupBox):
         self.alpha = QDoubleSpinBox()
         self.greeting = QLineEdit()
         self.font = QComboBox()
+        self.testFontLabel = QLabel('Prueba del Fondo #@?')
         self.btnSaveChanges = QPushButton('Guardar cambios')
-        self.btnAddClientType = QPushButton('Nuevo tipo')
+        self.btnAddRowClientType = QPushButton('Añadir')
+        self.btnDeleteRow = QPushButton('Quitar')
+        self.message = QLabel()
 
         ##components configuration
         vLayout1.setAlignment(QtCore.Qt.AlignTop)
+        self.btnAddRowClientType.setMaximumWidth(60)
+        self.btnDeleteRow.setMaximumWidth(60)
+        self.tLayout1.setHorizontalHeaderLabels(['Tipo', '% total'])
+        header = self.tLayout1.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+
+        imgs = self.db.getBGImagesNames()
+        self.bgImage.addItems(imgs)
+        fonts = self.db.getFontNames()
+        self.font.addItems(fonts)
 
         ##layout structure
         fLayout1.addRow(label3, self.red)
         fLayout1.addRow(label4, self.green)
         fLayout1.addRow(label5, self.blue)
         fLayout1.addRow(label6, self.alpha)
+
+        hLayout1.addWidget(label9)
+        hLayout1.addWidget(self.btnAddRowClientType)
+        hLayout1.addWidget(self.btnDeleteRow)
 
         vLayout1.addWidget(label1)
         vLayout1.addWidget(self.bgImage)
@@ -50,15 +69,11 @@ class QuoteConfig(QGroupBox):
         vLayout1.addWidget(label7)
         vLayout1.addWidget(self.greeting)
         vLayout1.addWidget(label8)
+        vLayout1.addWidget(self.testFontLabel)
         vLayout1.addWidget(self.font)
-        vLayout1.addWidget(label9)
-        vLayout1.addLayout(self.vLayout2)
+        vLayout1.addLayout(hLayout1)
+        vLayout1.addWidget(self.tLayout1)
+        vLayout1.addWidget(self.message)
         vLayout1.addWidget(self.btnSaveChanges)
 
         self.setLayout(vLayout1)
-
-
-
-class NewClientType(QWidget):
-    def __init__(self):
-        super(NewClientType, self).__init__()

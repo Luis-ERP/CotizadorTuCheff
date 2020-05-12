@@ -6,6 +6,8 @@ from reportlab.lib.pagesizes import A4, letter
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+from Source.queryManager import QueryManager
+
 from PIL import Image
 from datetime import date
 from time import time, strftime, localtime
@@ -15,30 +17,36 @@ import os
 
 class WriterPDF:
     ## --------------------------------------------------- PUBLIC FUNCTIONS -------------------------------------------------------------- ##
-    def __init__(self, quotes, quoteConfig, tuCheffInformation):
+    def __init__(self, quotes, quoteConfig):
+        self.db = QueryManager()
+
         ##storage vairbales
         self.quotes = quotes
         self.quoteConfig = quoteConfig
-        self.tuCheffInformation = tuCheffInformation
+        config = self.db.getQuoteConfiguration()
         self.story = []
 
         ##pdf settings variables
         self.filePath = ''
+        self.greeting = config.greeting
         self.pageSize = letter
-        self.fontName = ''
-        self.color = [.56,0,0,.8]
-        self.imgDir = 'Res/Img/mesa1.png'
+        self.fontName = config.font[:-4]
+        self.color = config.colorTheme #.56,0,0,.8
+        self.imgDir = 'Res/Img/%s.png' %(config.pickedImg)
         self.colorPalette = Color(self.color[0], self.color[1], self.color[2], alpha=self.color[3])
 
         self.currentDate = self.getCurrentDate()
         self.eventDate = self.processEventDate()
         self.dueDate = self.processDueDate()
 
-        ##init settings
-        pdfmetrics.registerFont(TTFont('Cordia', 'Res/Fonts/CORDIA.ttf'))
-        pdfmetrics.registerFont(TTFont('Cordia-bold', 'Res/Fonts/CordiaNewBold.ttf'))
-        pdfmetrics.registerFont(TTFont('Cordia-bold-italic', 'Res/Fonts/CordiaNewBoldItalic.ttf'))
-        self.fontName = 'Cordia'
+        ##fonts settings
+        fontFamily = self.db.getFontFamily(self.fontName)[0]
+        pdfmetrics.registerFont(TTFont(fontFamily, 'Res/Fonts/%s.ttf' %(self.fontName)))
+        pdfmetrics.registerFont(TTFont(fontFamily + '-bold', 'Res/Fonts/%s.ttf' %(self.fontName)))
+        pdfmetrics.registerFont(TTFont(fontFamily + '-bold-italic', 'Res/Fonts/%s.ttf' %(self.fontName)))
+        self.fontName = fontFamily
+
+        ##other settings
         self.makeFilePath()
         self.setParagraphStyles()
 
@@ -55,15 +63,14 @@ class WriterPDF:
         canvas.saveState()
         self.drawBackground(canvas, self.imgDir, self.colorPalette)  # 'fondo1.png'
         pageW, pageH = canvas._pagesize
-        self.drawCurrentDate(canvas, self.fontName, self.currentDate[0], self.currentDate[1], self.currentDate[2])
+        self.drawCurrentDate(canvas, self.currentDate[0], self.currentDate[1], self.currentDate[2])
         canvas.restoreState()
 
     def footer(self, canvas, doc):
+        info = self.db.getBusinessInformation()
         canvas.saveState()
-        self.drawFooter(canvas, self.fontName, self.dueDate[1], self.dueDate[2])
-        self.drawAddressBox(canvas, self.fontName, self.tuCheffInformation['address'],
-                            self.tuCheffInformation['cellPhones'], self.tuCheffInformation['email1'],
-                            self.tuCheffInformation['email2'])
+        self.drawFooter(canvas, self.dueDate[1], self.dueDate[2])
+        self.drawAddressBox(canvas, info.address, info.phone, info.email1, info.email2)
         canvas.restoreState()
 
     def drawContent(self):
@@ -139,11 +146,11 @@ class WriterPDF:
         flowable.canv.setFillColor(color)
         self.canv.rect(0, 0, width=130, height=draw_height, fill=True, stroke=False)
 
-    def drawCurrentDate(self, canvas, font, day, month, year):
+    def drawCurrentDate(self, canvas, day, month, year):
         pageW, pageH = canvas._pagesize
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.setFont(font, 14)
-        textLen = canvas.stringWidth("Santiago de Querétaro a %s de %s de %s" % (day, month, year), font, 14)
+        canvas.setFont(self.fontName, 14)
+        textLen = canvas.stringWidth("Santiago de Querétaro a %s de %s de %s" % (day, month, year), self.fontName, 14)
         canvas.drawString(pageW - textLen - 20, pageH - 146, "Santiago de Querétaro a %s de %s de %s" % (day, month, year))
 
     def drawBackground(self, canvas, imgURL, color):
@@ -155,10 +162,11 @@ class WriterPDF:
             canvas.setPageSize((pageW, pageH))
         canvas.drawImage(imgURL, 0, 0, width=pageW, height=pageH)
 
-    def drawFooter(self, canvas, font, month, year):
+    def drawFooter(self, canvas, month, year):
+        fontSize = 11
         pageW, pageH = canvas._pagesize
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.setFont(font, 12)
+        canvas.setFont(self.fontName, fontSize)
         str1 = 'Para factura considerar costo más IVA.'
         str2 = 'Los costos incluyen IVA.'
         str3 = 'Cotización vigente hasta %s de %s'
@@ -170,8 +178,8 @@ class WriterPDF:
 
         x1 = 180
         y = 100
-        x2 = 50
-        if not self.quoteConfig.configuration.iva: # <----------------------------------------------------------------------------CAMBIAR
+        x2 = 13
+        if not self.quoteConfig.configuration.iva:
             canvas.drawString(x1, y, str1)
             canvas.drawString(x1, y - 15, str3  %(month, year))
         else:
@@ -179,36 +187,36 @@ class WriterPDF:
             canvas.drawString(x1, y - 15, str3 %(month, year))
 
         if not self.quoteConfig.event.weddingMode:
-            textLen = canvas.stringWidth(str4, font, 12)
+            textLen = canvas.stringWidth(str4, self.fontName, fontSize)
             canvas.drawString(pageW - textLen - x2, y, str4)
-            textLen = canvas.stringWidth(str5, font, 12)
+            textLen = canvas.stringWidth(str5, self.fontName, fontSize)
             canvas.drawString(pageW - textLen - x2, y - 15, str5)
         else:
-            textLen = canvas.stringWidth(str6, font, 12)
+            textLen = canvas.stringWidth(str6, self.fontName, fontSize)
             canvas.drawString(pageW - textLen - x2, y, str6)
-            textLen = canvas.stringWidth(str7, font, 12)
+            textLen = canvas.stringWidth(str7, self.fontName, fontSize)
             canvas.drawString(pageW - textLen - x2, y - 15, str7)
-            textLen = canvas.stringWidth(str8, font, 12)
+            textLen = canvas.stringWidth(str8, self.fontName, fontSize)
             canvas.drawString(pageW - textLen - x2, y - 30, str8)
 
-    def drawAddressBox(self, canvas, font, address, cellPhones, email1, email2):
+    def drawAddressBox(self, canvas, address, cellPhones, email1, email2):
         pageW, pageH = canvas._pagesize
         canvas.setFillColorRGB(0, 0, 0)
-        canvas.setFont(font, 14)
+        canvas.setFont(self.fontName, 14)
 
-        textLen = canvas.stringWidth(address, font, 14)
-        canvas.drawString(pageW / 2 - textLen / 2 + 85, 40, address)
-        textLen = canvas.stringWidth(cellPhones, font, 14)
-        canvas.drawString(pageW / 2 - textLen / 2 + 85, 25, cellPhones)
-        textLen = canvas.stringWidth(email1, font, 14)
-        canvas.drawString(pageW / 2 - textLen / 2 + 85, 10, email1)
-        textLen = canvas.stringWidth(email2, font, 14)
-        canvas.drawString(pageW / 2 - textLen / 2 + 85, 0, email2)
+        textLen = canvas.stringWidth(address, self.fontName, 14)
+        canvas.drawString(pageW / 2 - textLen / 2 + 85, 45, address)
+        textLen = canvas.stringWidth(cellPhones, self.fontName, 14)
+        canvas.drawString(pageW / 2 - textLen / 2 + 85, 30, cellPhones)
+        textLen = canvas.stringWidth(email1, self.fontName, 14)
+        canvas.drawString(pageW / 2 - textLen / 2 + 85, 18, email1)
+        textLen = canvas.stringWidth(email2, self.fontName, 14)
+        canvas.drawString(pageW / 2 - textLen / 2 + 85, 5, email2)
 
     def drawGreeting(self):
         #box = self.flowableFigure(self.colorPalette)
         # self.story.append(box)
-        self.story.append(Paragraph('Estimado cliente' + '\n', self.titleStyle))
+        self.story.append(Paragraph(self.greeting + '\n', self.titleStyle))
         self.story.append(Spacer(1, 0.3 * inch))
         self.story.append(Paragraph(
             'A continuación le presento la cotización del servicio para %s invitados, solicitado para el mes de %s de %s.' % (

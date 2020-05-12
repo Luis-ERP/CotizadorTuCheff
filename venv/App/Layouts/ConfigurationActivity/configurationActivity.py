@@ -1,11 +1,12 @@
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 
-from Layouts.ConfigurationActivity.quoteConfig import QuoteConfig
-from Layouts.ConfigurationActivity.facturaConfig import FacturaConfig
-from Layouts.ConfigurationActivity.usersConfig import UsersConfig
-from Layouts.ConfigurationActivity.myAccountConfig import MyAccountConfig
-from Layouts.ConfigurationActivity.infoConfig import InfoConfig
+from Source.Configuration.quote import Quote
+from Source.Configuration.factura import Factura
+from Source.Configuration.users import Users
+from Source.Configuration.myAccount import MyAccount
+from Source.Configuration.info import Info
+from Source.Configuration.firebase import Firebase
 
 class ConfigurationActivity(QWidget):
     def __init__(self):
@@ -18,11 +19,12 @@ class ConfigurationActivity(QWidget):
 
         ##declare components
         label1 = QLabel('Configuración')
-        self.quote = QuoteConfig()
-        self.factura = FacturaConfig()
-        self.users = UsersConfig()
-        self.myAccount = MyAccountConfig()
-        self.info = InfoConfig()
+        self.quote = Quote()
+        self.factura = Factura()
+        self.users = Users()
+        self.myAccount = MyAccount()
+        self.info = Info()
+        self.firebase = Firebase()
 
         ##configuration components
         vLayout1.setAlignment(QtCore.Qt.AlignTop)
@@ -30,6 +32,7 @@ class ConfigurationActivity(QWidget):
 
         ##layout structure
         vLayout2.addWidget(self.info)
+        vLayout2.addWidget(self.firebase)
 
         vLayout1.addWidget(self.myAccount)
         vLayout1.addWidget(self.quote)

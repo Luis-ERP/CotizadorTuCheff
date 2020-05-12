@@ -1,13 +1,14 @@
 from Layouts.QuoteActivity.quoteActivity import QuoteActivity
 from Source.Quote.writerPDF import WriterPDF
 from Database.quoteConfiguration import QuoteConfiguration
+from Source.queryManager import QueryManager
 
 import math
 
 class Quote(QuoteActivity):
     def __init__(self):
         super(Quote, self).__init__()
-
+        self.db = QueryManager()
         ##events handler
         self.configuration.btnGeneratePDF.clicked.connect(self.generatePDF)
 
@@ -21,7 +22,6 @@ class Quote(QuoteActivity):
         event = self.event.getEventInformation()
         codes = self.code.getCodeInformation()
         quoteConfig = QuoteConfiguration(config, event, client, codes)
-        info = {'address': '', 'email1': '', 'email2': '', 'cellPhones': ''}
 
         ##modify the prices
         for q, quote in enumerate(quotesInfo):
@@ -40,7 +40,7 @@ class Quote(QuoteActivity):
                     quotesInfo[q].services[s].elements[e] = self.applyCodes(element, quoteConfig)
                     quotesInfo[q].services[s].elements[e] = self.applyTaxes(element, quoteConfig)
 
-        PDFwriter = WriterPDF(quotesInfo, quoteConfig, info)
+        PDFwriter = WriterPDF(quotesInfo, quoteConfig)
         PDFwriter.drawContent()
         PDFwriter.buildDoc()
         PDFwriter.openBuild()
@@ -90,12 +90,25 @@ class Quote(QuoteActivity):
         return element
 
     def applyClientType(self, element):
-        percentage = 100
-        number = percentage / 100
+        clientIndex = self.client.clientType.currentIndex()
+        client = self.db.getQuoteConfiguration().clientTypes[clientIndex]
+        number = client.number
         element.price = element.price * number
         return element
 
     def applyCodes(self, element, quoteConfig):
+        codes = quoteConfig.codes.codes
+        comments = quoteConfig.codes.comments
+        for code in codes:
+            processed = quoteConfig.codes.processCode(code)
+            value = processed[1]
+            if processed[0] == 'DESCU':
+                value = -1 * value
+            if processed[2] == '%':
+                value = value / 100
+                element.price = element.price + element.price*value
+            elif processed[2] == '$':
+                element.price = element.price + (value)
         return element
 
     def initialDeposit(self):

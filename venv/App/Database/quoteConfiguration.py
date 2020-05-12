@@ -34,15 +34,62 @@ class Event:
         self.hours = ''
         self.weddingMode = ''
 
-class Codes:
-    def __init__(self, strings):
+class Code:
+    def __init__(self):
         self.codes = []
         self.comments = []
-        self.processCodes(strings)
-        self.processComments(strings)
 
-    def processCodes(self, list):
-        pass
+    def processCode(self, text):
+        text = text[1:]
+        action = text[:5]  # get action (DESCU/CARGO)
+        text = text[5:]
+        value = []
+        symbol = ''
+        quote = []
+        service = []
+        element = []
 
-    def processComments(self, list):
-        pass
+        for n in text:
+            if '%' in n or '$' in n:
+                symbol = n
+                break
+            else:
+                value.append(n)
+        text = text[len(value) + 1:]
+        value = int(''.join(value))
+
+        if len(text) <= 0:
+            return (action, value, symbol, 0, 0, 0)
+
+        for n in text:
+            if n == '.':
+                break
+            else:
+                quote.append(n)
+
+        text = text[len(quote) + 1:]
+        try:
+            quote = int(''.join(quote))
+        except:
+            quote = 0
+        if len(text) <= 0:
+            return (action, value, symbol, quote, 0, 0)
+
+        for n in text:
+            if n == '.':
+                break
+            else:
+                service.append(n)
+
+        text = text[len(service) + 1:]
+        service = int(''.join(service))
+        if len(text) <= 0:
+            return (action, value, symbol, quote, service, 0)
+
+        for n in text:
+            if n == '.':
+                break
+            else:
+                element.append(n)
+        element = int(''.join(element))
+        return (action, value, symbol, quote, service, element)

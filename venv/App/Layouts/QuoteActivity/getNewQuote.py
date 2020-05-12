@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import *
 from PyQt5 import QtGui, QtCore
 
 
-
 class GetNewQuote(QGroupBox):
     def __init__(self, parent, index):
         super(GetNewQuote, self).__init__('Cotización %s' %(str(index)))

@@ -1,6 +1,8 @@
 from Layouts.QuoteActivity import upperSegment
 from Database.quoteConfiguration import *
 
+from PyQt5 import QtCore
+
 
 class ConfigurationSegment(upperSegment.ConfigurationSegment):
     def __init__(self, parent):
@@ -16,6 +18,14 @@ class ConfigurationSegment(upperSegment.ConfigurationSegment):
         config.showTotalPrice = self.checkTotalPrice.isChecked()
         config.includeDeposit = self.checkDeposit.isChecked()
         return config
+
+    def displayMsg(self, msg='', colorStr='black', iterable=False, time=4000):
+        if iterable:
+            self.message.setText(msg)
+            self.message.setStyleSheet('QLabel {color: %s;}' %(colorStr))
+            QtCore.QTimer.singleShot(time, self.displayMsg)
+        else:
+            self.message.setText('')
 
 
 class ClientSegment(upperSegment.ClientSegment):
@@ -33,6 +43,14 @@ class ClientSegment(upperSegment.ClientSegment):
         client.clintType = self.clientType.currentText()
         return client
 
+    def displayMsg(self, msg='', colorStr='black', iterable=False, time=4000):
+        if iterable:
+            self.message.setText(msg)
+            self.message.setStyleSheet('QLabel {color: %s;}' %(colorStr))
+            QtCore.QTimer.singleShot(time, self.displayMsg)
+        else:
+            self.message.setText('')
+
 
 class EventSegment(upperSegment.EventSegment):
     def __init__(self):
@@ -48,10 +66,50 @@ class EventSegment(upperSegment.EventSegment):
         event.weddingMode = self.checkWedding.isChecked()
         return event
 
+    def displayMsg(self, msg='', colorStr='black', iterable=False, time=4000):
+        if iterable:
+            self.message.setText(msg)
+            self.message.setStyleSheet('QLabel {color: %s;}' %(colorStr))
+            QtCore.QTimer.singleShot(time, self.displayMsg)
+        else:
+            self.message.setText('')
+
 
 class CodeSegment(upperSegment.CodeSegment):
     def __init__(self):
         super(CodeSegment, self).__init__()
 
+        ##event handlers
+        self.btnAddCode.clicked.connect(self.addTextToList)
+        self.btnDeleteCode.clicked.connect(self.deleteFromList)
+
+    def addTextToList(self):
+        text = self.codeTextInput.text()
+        if len(text) > 0:
+            self.codeList.addItem(text)
+
+    def deleteFromList(self):
+        index = self.codeList.currentRow()
+        self.codeList.takeItem(index)
+
     def getCodeInformation(self):
-        return None
+        codes = []
+        comments = []
+        for i in range(self.codeList.count()):
+           text = self.codeList.item(i).text()
+           if text[0] == '#':
+               codes.append(text)
+           else:
+               comments.append(text)
+        obj = Code()
+        obj.codes = codes
+        obj.comments = comments
+        return obj
+
+    def displayMsg(self, msg='', colorStr='black', iterable=False, time=4000):
+        if iterable:
+            self.message.setText(msg)
+            self.message.setStyleSheet('QLabel {color: %s;}' %(colorStr))
+            QtCore.QTimer.singleShot(time, self.displayMsg)
+        else:
+            self.message.setText('')

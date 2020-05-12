@@ -12,15 +12,17 @@ class ServicesDBActivity(QWidget):
 
         ##declare components
         label1 = QLabel('Servicios')
-        self.btnAddNewService = QPushButton()
+        self.btnAddNewService = QPushButton('Agregar servicio')
 
         ##components configuration
+        self.btnAddNewService.setMaximumWidth(100)
         self.tLayout1.setHorizontalHeaderLabels(['Nombre', 'Descripción', 'Lista de elementos', 'Modificar', 'Borrar'])
-        self.tLayout1.setColumnWidth(0, 115)
-        self.tLayout1.setColumnWidth(1, 200)
-        self.tLayout1.setColumnWidth(2, 250)
-        self.tLayout1.setColumnWidth(3, 50)
-        self.tLayout1.setColumnWidth(4, 50)
+        header = self.tLayout1.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
 
         ##layout structure
         vLayout1.addWidget(label1)

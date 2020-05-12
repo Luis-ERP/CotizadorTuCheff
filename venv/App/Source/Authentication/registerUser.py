@@ -1,5 +1,5 @@
 from Layouts.AuthenticationActivity.registerUserActivity import RegisterUserActivity, SuccesfulRegisterActivity
-from Database.user import User
+from Database.user import User, Developer
 from Source.queryManager import QueryManager
 
 class RegisterUser(RegisterUserActivity):
@@ -25,6 +25,7 @@ class RegisterUser(RegisterUserActivity):
         newUser.email = email
         newUser.password = password
         newUser.phone = phone
+        newUser.permissions = Developer()
         response = self.db.createNewUser(newUser, emailConfir, passConfir)
         if not (response == True):
             self.message.setText(response)

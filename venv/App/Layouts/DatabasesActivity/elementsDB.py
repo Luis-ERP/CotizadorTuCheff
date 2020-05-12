@@ -12,16 +12,17 @@ class ElementsDBActivity(QWidget):
 
         ##declare components
         label1 = QLabel('Elementos')
-        self.btnAddNewElement = QPushButton()
+        self.btnAddNewElement = QPushButton('Agregar elemento')
 
         ##components configuration
+        self.btnAddNewElement.setMaximumWidth(100)
         self.tLayout1.setHorizontalHeaderLabels(['Nombre', 'Categorias', 'Precio', 'Modificar', 'Borrar'])
-        #self.tLayout1.setMinimumWidth(500)
-        self.tLayout1.setColumnWidth(0, 175)
-        self.tLayout1.setColumnWidth(1, 175)
-        self.tLayout1.setColumnWidth(2, 70)
-        self.tLayout1.setColumnWidth(3, 70)
-        self.tLayout1.setColumnWidth(4, 70)
+        header = self.tLayout1.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
 
         ##layout structure
         vLayout1.addWidget(label1)

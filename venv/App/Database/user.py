@@ -1,15 +1,26 @@
 
 class User:
     def __init__(self):
+        self.id = ''
         self.name = ''
         self.email = ''
         self.password = ''
+        self.phone = ''
         self.permissions = Permissions()
         self.loggedIn = False
 
     def toDict(self):
         permissions = self.permissions.toDict()
-        return {'name': self.name, 'email': self.email, 'password': self.password, 'permissions': permissions}
+        return {'name': self.name, 'email': self.email, 'phone': self.phone, 'permissions': permissions}
+
+    def fromDict(self, dictionary, id):
+        permissionsObj = Permissions()
+        permissionsObj.fromDict(dictionary['permissions'])
+        self.id = id
+        self.name = dictionary['name']
+        self.email = dictionary['email']
+        self.phone = dictionary['phone']
+        self.permissions = permissionsObj
 
 
 class Permissions:
@@ -56,6 +67,28 @@ class Permissions:
             'createSecurityBackup': self.createSecurityBackup,
             'writeClientTypes': self.writeClientTypes
         }
+
+    def fromDict(self, dictionary):
+        self.createPDFQuotes = dictionary['createPDFQuotes']
+        self.saveQuoteTemplates = dictionary['saveQuoteTemplates']
+        self.openQuoteTemplates = dictionary['openQuoteTemplates']
+        self.createFactura = dictionary['createFactura']
+
+        self.accessServicesDatabase = dictionary['accessServicesDatabase']
+        self.accessElementsDatabase = dictionary['accessElementsDatabase']
+
+        self.readQuoteConfiguration = dictionary['readQuoteConfiguration']
+        self.readUsers = dictionary['readUsers']
+        self.readBusinessInformation = dictionary['readBusinessInformation']
+        self.readFirebaseConfiguration = dictionary['readFirebaseConfiguration']
+        self.readClientTypes = dictionary['readClientTypes']
+        self.writeQuoteConfiguration = dictionary['writeQuoteConfiguration']
+        self.writeUsers = dictionary['writeUsers']
+        self.writeBusinessInformation = dictionary['writeBusinessInformation']
+        self.writeFirebaseConfiguration = dictionary['writeFirebaseConfiguration']
+        self.createSecurityBackup = dictionary['createSecurityBackup']
+        self.writeClientTypes = dictionary['writeClientTypes']
+
 
 class Anonymous(Permissions):
     def __init__(self):

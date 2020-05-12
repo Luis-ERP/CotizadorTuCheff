@@ -9,20 +9,20 @@ class LogIn(LogInActivity):
         super(LogIn, self).__init__()
         self.parent = parent
         self.db = QueryManager()
-        self.user = User()
 
         ## ----------------------------------------------------------------- QUITAR DESPUES DE DEBUGGEAR
-        self.email.setText('leramirezp@hotmail.com')
-        self.password.setText('Saurio9810')
+        self.email.setText('a01702056@itesm.mx')
+        self.password.setText('1234567')
 
         ##event handlers
         self.btnEnter.clicked.connect(self.logInUser)
         self.btnNewUser.clicked.connect(self.parent.changeToRegisterWindow)
 
     def logInUser(self):
-        email = self.email.text()
-        password = self.password.text()
-        logIn = self.db.signIn(email, password)
+        user = User()
+        user.email = self.email.text()
+        user.password = self.password.text()
+        logIn = self.db.signIn(user)
 
         if logIn == True:
             self.parent.changeToMainWindow()

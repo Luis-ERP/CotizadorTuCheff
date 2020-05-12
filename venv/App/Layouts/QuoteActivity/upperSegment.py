@@ -1,9 +1,12 @@
+from Source.queryManager import QueryManager
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtGui
+
 
 class ClientSegment(QGroupBox):
     def __init__(self):
         super(ClientSegment, self).__init__('Cliente')
+        self.db = QueryManager()
         ##self configuration
         self.setMaximumHeight(200)
         self.setMaximumWidth(300)
@@ -26,6 +29,12 @@ class ClientSegment(QGroupBox):
         self.phone = QLineEdit()
         self.enterprise = QLineEdit()
         self.rfc = QLineEdit()
+        self.message = QLabel()
+
+        ##components configuration
+        clientTypes = self.db.getQuoteConfiguration().clientTypes
+        for client in clientTypes:
+            self.clientType.addItem(client.name)
 
         ##layout structure
         self.fLayout1.addRow(label1, self.nameClient)
@@ -35,6 +44,7 @@ class ClientSegment(QGroupBox):
         self.fLayout1.addRow(label4, self.email)
         self.fLayout1.addRow(label5, self.phone)
         self.fLayout1.addRow(label3, self.clientType)
+        self.fLayout1.addRow(self.message)
 
         self.setLayout(self.fLayout1)
 
@@ -61,6 +71,7 @@ class EventSegment(QGroupBox):
         self.nuGuests = QSpinBox()
         self.hoursService = QSpinBox()
         self.checkWedding = QCheckBox('Boda o XV años')
+        self.message = QLabel()
 
         ##components configuration
         self.date.setDateTime(QtCore.QDateTime.currentDateTime())
@@ -85,6 +96,7 @@ class EventSegment(QGroupBox):
         fLayout.addRow(label4, self.nuGuests)
         fLayout.addRow(label5, self.hoursService)
         fLayout.addRow(self.checkWedding)
+        fLayout.addRow(self.message)
 
         self.setLayout(fLayout)
 
@@ -116,6 +128,7 @@ class ConfigurationSegment(QGroupBox):
         self.checkTotalPrice = QCheckBox('Mostrar precio total')
         self.btnNewQuote = QPushButton('Agregar cotización')
         self.checkDeposit = QCheckBox('Incluir depósito reembolsable')
+        self.message = QLabel()
 
         ##components configuration
         self.gasPrice.setValue(20.0)
@@ -149,6 +162,7 @@ class ConfigurationSegment(QGroupBox):
         vLayout1.addLayout(hLayout2)
         vLayout1.addLayout(hLayout3)
         vLayout1.addWidget(self.btnNewQuote)
+        vLayout1.addWidget(self.message)
 
         self.setLayout(vLayout1)
         self.setMinimumWidth(300)
@@ -176,9 +190,10 @@ class CodeSegment(QGroupBox):
         self.codeList = QListWidget()
         self.btnAddCode = QPushButton('Agregar')
         self.btnDeleteCode = QPushButton('Quitar')
+        self.message = QLabel()
 
         ##components configuration
-        self.codeTextInput.setPlaceholderText('Agregar nota de venta o código, ej. DESC1000$, CARGO10%')
+        self.codeTextInput.setPlaceholderText('Agregar nota de venta o código, ej. #DESCU1000$, #CARGO10%')
 
         ##layout structure
         hLayout1.addWidget(self.btnAddCode)
@@ -187,5 +202,6 @@ class CodeSegment(QGroupBox):
         vLayout1.addWidget(self.codeTextInput)
         vLayout1.addLayout(hLayout1)
         vLayout1.addWidget(self.codeList)
+        vLayout1.addWidget(self.message)
 
         self.setLayout(vLayout1)
